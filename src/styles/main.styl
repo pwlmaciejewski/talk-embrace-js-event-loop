@@ -2,14 +2,14 @@
 
 // variables!
 
-slide_width = 640px
-slide_height = 480px
-slide_background = #eaeaea
+slide_width = 100%
+slide_height = 100%
+slide_background = #1f282d
 
 slide_transition_length = .6s
 slide_transition_easing = ease
 slide_transition_translate_x = 0
-slide_transition_rotate_y = 90deg
+slide_transition_rotate_y = 0
 
 bullet_transition_length = .3s
 bullet_transition_easing = ease
@@ -36,6 +36,8 @@ article
   transition: background slide_transition_length slide_transition_easing
   display: none
   &.bespoke-parent
+    background #1f282d
+    color #fff
     display: block
     position: absolute
     top: 0
@@ -60,12 +62,9 @@ article
   width: slide_width
   height: slide_height
   position: absolute
-  top: 50%
-  margin-top: (slide_height / 2) * -1
-  left: 50%
-  margin-left: (slide_width / 2) * -1
+  top: 0
+  left: 0
   background: slide_background
-  padding: 40px
   border-radius: 0
   @media print
     height: 743px // seems to correspond with an A4, landscape page height
@@ -121,25 +120,29 @@ code
 
 body
   font-family: helvetica, arial, sans-serif
-  font-size: 18px
-  color: #404040
+  font-size: 24px
+  color: #edf0f2
 
 h1
-  font-size: 72px
+  font-family Raleway
+  font-size: 58px
   line-height: 82px
   letter-spacing: -2px
   margin-bottom: 16px
+  text-transform uppercase
 
 h2
+  font-family Raleway
   font-size: 42px
-  letter-spacing: -1px
-  margin-bottom: 8px
+  margin-bottom: 20px
+  font-weight 900
 
 h3
-  font-size: 24px
-  font-weight: normal
-  margin-bottom: 24px
-  color: #606060
+  font-family 'The Girl Next Door'
+  font-size: 32px
+  font-weight: bold
+  margin-bottom: 10px
+  color: #aaa
 
 hr
   visibility: hidden
@@ -156,5 +159,27 @@ p
   line-height: 22px
 
 a
-  color: #0093CC
+  color: #fff
   text-decoration: none
+
+section code[class*="language-"]
+  background transparent
+  border 0
+  box-shadow none
+  font-family "Ubuntu Mono"
+  font-size 32px
+  text-shadow none
+
+.bg
+  position absolute
+  height 100%
+  left 0
+  width 100%
+  top 0
+  z-index 0
+
+.overlay
+  background rgba(0, 0, 0, 0.7)
+  padding 20px 0
+  width 100%
+  z-index 1
