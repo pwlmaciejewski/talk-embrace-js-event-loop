@@ -21,9 +21,39 @@ html
       section
         img.bg(src="images/kermit.gif")
         div.overlay
-          h1 I have an idea
-          h2 Let's write a http server!
+          h1 Let's write a HTTP server!
 
+      section
+        code.language-python
+          pre.
+            from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+            class MyHandler(BaseHTTPRequestHandler):
+                def do_GET (self):
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/plain')
+                    self.end_headers()
+                    f = open('./file.txt')
+                    self.wfile.write(f.read())
+                    f.close()
+
+            server = HTTPServer(('', 8080), MyHandler)
+            server.serve_forever()
+            print 'Server started on port 8080'
+
+      section
+        img.bg(src="images/iron_man.gif")
+        div.overlay
+          h1 Now, lets test it!
+
+      section
+        code.language-bash
+          pre.
+            ab -n 1000 -c 10 http://127.0.0.1:8080/
+
+            Requests per second:    1569.56 [#/sec] (mean)
+            Time per request:       6.371 [ms] (mean)
+            Time per request:       0.637 [ms] (mean, across all concurrent requests)
 
     script(src='bower_components/bespoke.js/dist/bespoke.min.js')
     script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
