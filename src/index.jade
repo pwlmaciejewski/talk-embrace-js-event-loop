@@ -542,8 +542,138 @@ html
 
       section
         div.overlay
-          h1 No more code for today
-          h2 yay!
+          h1 Is async.js the cure
+          h2 for event loop pain?
+
+      section
+        div.overlay
+          h2 Here's the thing...
+          h1 Asynchronous code is contagious
+          h2 Nothing can't stop it
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b) {
+              return a + b;
+            };
+
+            var foo (something) {
+              if (something) {
+                return add(1, 2);
+              } else {
+                return 0;
+              }
+            };
+
+      section
+        div.overlay
+          h1 Let's make add asynchronous
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              setTimeout(function() {
+                callback(null, a + b);
+              }, 1000);
+            };
+
+            var foo (something) {
+              if (something) {
+                return add(1, 2);
+              } else {
+                return 0;
+              }
+            };
+
+      section
+        div.overlay
+          h1 And now foo is broken...
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              setTimeout(function() {
+                callback(null, a + b);
+              }, 1000);
+            };
+
+            var foo (something, callback) {
+              if (something) {
+                add(1, 2, callback);
+              } else {
+                callback(null, 0);
+              }
+            };
+
+      section
+        div.overlay
+          h1 Asynchronous code<br>causes brain damage
+          h2 It's the price for event loop
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              setTimeout(function() {
+                callback(null, a + b);
+              }, 1000);
+            };
+
+      section
+        div.overlay
+          h2 It breaks the fundandamental thing about functions
+          h1 Function doesn't return the result
+
+      section
+        div.overlay
+          h2 We can fix it!
+          h1 Make functions return<br>something meaningful...
+
+      section
+        div.overlay
+          h1 A promise of execution!
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b) {
+              return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                  resolve(a + b);
+                }, 1000);
+              });
+            };
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b) {
+              return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                  reject(a + b);
+                }, 1000);
+              });
+            };
+
+            addPromise = add(1, 2);
+            addPromise.done(function (result) {
+              console.log(result);
+            }, function (err) {
+              throw err;
+            });
+
+      section
+        div.overlay
+          h1 But that's another story...
+
+      section
+        h1 Thank you!
+        h2 fragphace@gmail.com
+        h2 @fragphace
+
 
     script(src='bower_components/bespoke.js/dist/bespoke.min.js')
     script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
