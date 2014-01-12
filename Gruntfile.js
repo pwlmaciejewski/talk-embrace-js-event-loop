@@ -146,6 +146,21 @@ module.exports = function(grunt) {
         },
         src: '**/*'
       }
+    },
+    'string-replace': {
+      examples: {
+        files: { 
+          'src/index.jade': 'src/index.src.jade' 
+        },
+        options: {
+          replacements: [{
+            pattern: /@@(.*)/g,
+            replacement: function (match, p1, offset, string) {
+              return grunt.file.read('./examples/' + p1);
+            }            
+          }]
+        }
+      }
     }
   };
 
@@ -161,6 +176,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-gh-pages');
   grunt.loadNpmTasks('grunt-concurrent');
+  grunt.loadNpmTasks('grunt-string-replace');
 
   grunt.registerTask('default', ['clean', 'concurrent:compile']);
   grunt.registerTask('server', ['default', 'concurrent:server']);

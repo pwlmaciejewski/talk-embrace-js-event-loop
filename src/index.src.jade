@@ -1,0 +1,57 @@
+!!! 5
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+    title Embrace JS Event Loop
+
+    //- Check out 'src/bower_components/prism/' for available themes
+    link(rel='stylesheet', type='text/css', href='bower_components/prism/themes/prism-tomorrow.css')
+    link(rel='stylesheet', type='text/css', href='styles/main.css')
+    link(href='http://fonts.googleapis.com/css?family=Ubuntu+Mono|The+Girl+Next+Door|Lora:400,700,400italic,700italic|Raleway:400,600,900', rel='stylesheet', type='text/css')
+
+  body
+
+    article
+
+      section
+        h1 Embrace JS Event Loop
+        h3 by @fragphace
+
+      section
+        img.bg(src="images/kermit.gif")
+        div.overlay
+          h1 Let's write a HTTP server!
+
+      section
+        code.language-python
+          pre.
+            @@server.py
+
+      section
+        img.bg(src="images/iron_man.gif")
+        div.overlay
+          h1 Now, lets test it!
+
+      section
+        code.language-bash
+          pre.
+            ab -n 1000 -c 10 http://127.0.0.1:8080/
+
+            Requests per second:    1569.56 [#/sec] (mean)
+            Time per request:       6.371 [ms] (mean)
+            Time per request:       0.637 [ms] (mean, across all concurrent requests)
+
+      section
+        code.language-javascript
+          pre.
+            @@server.js
+
+    script(src='bower_components/bespoke.js/dist/bespoke.min.js')
+    script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
+    script(src='bower_components/bespoke-hash/dist/bespoke-hash.min.js')
+    script(src='bower_components/bespoke-state/dist/bespoke-state.min.js')
+    script(src='bower_components/prism/prism.js')
+    script(src='bower_components/prism/components/prism-coffeescript.js')
+    script(src='bower_components/prism/components/prism-python.js')
+    script(src='scripts/main.js')

@@ -1,3 +1,4 @@
+import os
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -5,10 +6,10 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
-        f = open('./file.txt')
+        f = open(os.path.dirname(os.path.realpath(__file__)) + '/file.txt')
         self.wfile.write(f.read())
         f.close()
 
-server = HTTPServer(('', 8080), MyHandler)
+server = HTTPServer(('', 8001), MyHandler)
 server.serve_forever()
-print 'Server started on port 8080'
+print 'Server started on port 8001'

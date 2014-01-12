@@ -49,11 +49,109 @@ html
       section
         code.language-bash
           pre.
-            ab -n 1000 -c 10 http://127.0.0.1:8080/
+            ab -n 1000 -c 10 http://127.0.0.1:8001/
 
             Requests per second:    1569.56 [#/sec] (mean)
             Time per request:       6.371 [ms] (mean)
             Time per request:       0.637 [ms] (mean, across all concurrent requests)
+
+      section
+        div.overlay
+          h1 Let's do the same with JavaScript
+
+      section
+        code.language-javascript
+          pre.
+            var http = require('http');
+            var fs = require('fs');
+
+            var server = http.createServer(function (req, res) {
+                fs.readFile(__dirname + '/file.txt', function (err, text) {
+                    if (err) {
+                        res.writeHead('404');
+                        res.write('File not found');
+                        return res.end();
+                    }
+                    res.writeHead('200', {
+                        'Content-Type': 'text/plain'
+                    });
+                    res.write(text);
+                    res.end();
+                });
+            });
+
+            server.listen(8002, function () {
+                console.log('Server started on port 8002');
+            });
+
+      section
+        code.language-bash
+          pre.
+            ab -n 1000 -c 10 http://127.0.0.1:8002/
+
+            Requests per second:    4615.93 [#/sec] (mean)
+            Time per request:       2.166 [ms] (mean)
+            Time per request:       0.217 [ms] (mean, across all concurrent requests)
+
+      section
+        img.bg(src="images/nodejs_vs_apache.png")
+        div.overlay
+          h1 Node.js is fast
+          h2 Google: node.js benchmark [your favourite language]
+
+      section
+        div.overlay
+            h1 WHY???
+
+      section
+        div.overlay
+            h1 Is JavaScript THAT fast?
+            h2 (it's not)
+
+      section
+        div.overlay
+            h2 You gotta ask yourself a question
+            h1 What threads are doing<br>for most of the time?
+
+      section
+        div.overlay
+            h1 They're waiting!
+
+      section
+        code.language-python
+          pre.
+            # class MyHandler(BaseHTTPRequestHandler):
+            #     def do_GET (self):
+            #         self.send_response(200)
+            #         self.send_header('Content-type', 'text/plain')
+            #         self.end_headers()
+                      f = open('./file.txt')
+            #         self.wfile.write(f.read())
+            #         f.close()
+
+      section
+        img.bg(src="images/prefork.png")
+
+      section
+        div.overlay
+            h1 Node.js do not wait
+            h2 Event loop, baby!
+
+      section
+        div.overlay
+            h2 It's true for browsers as well
+            h1 If you JavaScript,<br>you're in Event Loop
+
+      section
+        img.bg(src="images/event_loop.png")
+
+      section
+        div.overlay
+          h1 Benefits!
+          h2
+            ul
+              li Speed
+              li No deadlocks
 
     script(src='bower_components/bespoke.js/dist/bespoke.min.js')
     script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
