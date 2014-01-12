@@ -56,8 +56,7 @@ html
             Time per request:       0.637 [ms] (mean, across all concurrent requests)
 
       section
-        div.overlay
-          h1 Let's do the same with JavaScript
+        h1 Let's do the same with JavaScript
 
       section
         code.language-javascript
@@ -100,20 +99,24 @@ html
           h2 Google: node.js benchmark [your favourite language]
 
       section
+        img.bg(src="images/wtf.jpg")
         div.overlay
             h1 WHY???
 
       section
+        img.bg(src="images/race_accident.gif")
         div.overlay
             h1 Is JavaScript THAT fast?
             h2 (it's not)
 
       section
+        img.bg(src="images/cat-watching.gif")
         div.overlay
             h2 You gotta ask yourself a question
             h1 What threads are doing<br>for most of the time?
 
       section
+        img.bg(src="images/cat-sleeping.gif")
         div.overlay
             h1 They're waiting!
 
@@ -130,22 +133,25 @@ html
             #         f.close()
 
       section
-        img.bg(src="images/prefork.png")
+        img.bg.nofade(src="images/prefork.png")
 
       section
+        img.bg(src="images/headbanging.gif")
         div.overlay
             h1 Node.js do not wait
             h2 Event loop, baby!
 
       section
+        img.bg(src="images/monocycle.gif")
         div.overlay
             h2 It's true for browsers as well
             h1 If you JavaScript,<br>you're in Event Loop
 
       section
-        img.bg(src="images/event_loop.png")
+        img.bg.nofade(src="images/event_loop.png")
 
       section
+        img.bg(src="images/wow.gif")
         div.overlay
           h1 Benefits!
           h2
@@ -154,11 +160,13 @@ html
               li No deadlocks
 
       section
+        img.bg(src="images/dog-catch.gif")
         div.overlay
           h1 Where's the catch?
           h2 Everything's a tradeoff
 
       section
+        img.bg(src="images/kim-carrey.gif")
         div.overlay
           h1 Callback hell!
 
@@ -234,6 +242,7 @@ html
             });
 
       section
+        img.bg(src="images/atomic-bomb.gif")
         div.overlay
           h1 The Pyramid of Doom!!!
 
@@ -258,10 +267,12 @@ html
             })(jQuery);
 
       section
+        img.bg(src="images/policeman-blow-up.gif")
         div.overlay
           h1 Na&iuml;ve approach leads to<br>the catastrophic results
 
       section
+        img.bg(src="images/deer-wow.gif")
         div.overlay
           h2 JavaScript is one of the most expressive languages
           h1 Use the power to help yourself
@@ -325,11 +336,13 @@ html
             [ 1, 2 ]
 
       section
+        img.bg(src="images/floor-jumping.gif")
         div.overlay
           h1 It's better, but...
           h2 It's only the one scenario (series)
 
       section
+        img.bg(src="images/escalator-superman.gif")
         div.overlay
           h1 Use async.js!
 
@@ -337,27 +350,10 @@ html
         code.language-javascript
           pre.
             async.series([
-            //    function (cb) {
-            //        console.log('call 1');
-            //        setTimeout(function () {
-            //            console.log('result 1');
-            //           cb(null, 1);
-            //        }, 1000)
-            //    },
-            //    function (cb) {
-            //        console.log('call 2');
-            //        setTimeout(function () {
-            //            console.log('result 2');
-            //            cb(null, 2);
-            //        }, 500);
-            //    }
-            //], function (err, results) {
-            //    if (err) {
-            //        console.log(err);
-            //        return;
-            //    }
-            //    console.log(results);
-            //});
+              // ...
+            ], function (err, results) {
+              // ...
+            });
 
       section
         code.language-bash
@@ -373,27 +369,10 @@ html
         code.language-javascript
           pre.
             async.parallel([
-            //    function (cb) {
-            //        console.log('call 1');
-            //        setTimeout(function () {
-            //            console.log('result 1');
-            //            cb(null, 1);
-            //        }, 1000)
-            //    },
-            //    function (cb) {
-            //        console.log('call 2');
-            //        setTimeout(function () {
-            //            console.log('result 2');
-            //            cb(null, 2);
-            //        }, 500);
-            //    }
-            //], function (err, results) {
-            //    if (err) {
-            //       console.log(err);
-            //        return;
-            //    }
-            //    console.log(results);
-            //});
+              // ...
+            ], function (err, results) {
+              // ...
+            });
 
       section
         code.language-bash
@@ -409,28 +388,28 @@ html
         code.language-javascript
           pre.
             async.waterfall([
-            //    function (cb) {
-            //        console.log('call 1');
-            //        setTimeout(function () {
-            //            console.log('result 1');
-                        cb(null, 1, 2);
-            //        }, 1000)
-            //    },
+                function (cb) {
+                    console.log('call 1');
+                    setTimeout(function () {
+                        console.log('result 1');
+                      cb(null, 1, 2);
+                    }, 1000)
+                  },
                 function (one, two, cb) {
                     console.log(one, two);
-            //        console.log('call 2');
-            //        setTimeout(function () {
-            //            console.log('result 2');
-                        cb(null, 3);
-            //        }, 500);
-            //    }
+                    console.log('call 2');
+                    setTimeout(function () {
+                        console.log('result 2');
+                      cb(null, 3);
+                    }, 500);
+                }
             ], function (err, three) {
-            //    if (err) {
-            //        console.log(err);
-            //        return;
-            //    }
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 console.log(three);
-            //});
+            });
 
       section
         code.language-bash
@@ -443,12 +422,14 @@ html
             result 2
             3
       section
+        img.bg(src="images/async-parallel.gif")
         div.overlay
           h1 This and more!
           h2
             a(href="https://github.com/caolan/async") https://github.com/caolan/async
 
       section
+        img.bg(src="images/black-balls.gif")
         div.overlay
           h1 Async.js Protip #1
           h2 Use async.js + partial application
@@ -496,6 +477,7 @@ html
             ]);
 
       section
+        img.bg(src="images/clease.gif")
         div.overlay
           h1 Async.js Protip #2
           h2
@@ -535,21 +517,24 @@ html
             ]);
 
       section
+        img.bg(src="images/who-rain.gif")
         div.overlay
           h1 I beg you
           h2 callback is the LAST argument
           h2 callback takes the ERROR and the RESULT
 
       section
+        img.bg(src="images/team-fortess.gif")
         div.overlay
           h1 Is async.js the cure
           h2 for event loop pain?
 
       section
+        img.bg(src="images/codebase-over-time.gif")
         div.overlay
           h2 Here's the thing...
           h1 Asynchronous code is contagious
-          h2 Nothing can't stop it
+          h2 Nothing can stop it
 
       section
         code.language-javascript
@@ -567,8 +552,7 @@ html
             };
 
       section
-        div.overlay
-          h1 Let's make add asynchronous
+        h1 Let's make add asynchronous
 
       section
         code.language-javascript
@@ -588,8 +572,7 @@ html
             };
 
       section
-        div.overlay
-          h1 And now foo is broken...
+        h1 And now foo is broken...
 
       section
         code.language-javascript
@@ -609,6 +592,7 @@ html
             };
 
       section
+        img.bg(src="images/alice-eyeroll.gif")
         div.overlay
           h1 Asynchronous code<br>causes brain damage
           h2 It's the price for event loop
@@ -623,16 +607,19 @@ html
             };
 
       section
+        img.bg(src="images/jumper-fail.gif")
         div.overlay
           h2 It breaks the fundandamental thing about functions
           h1 Function doesn't return the result
 
       section
+        img.bg(src="images/printer-cat.gif")
         div.overlay
           h2 We can fix it!
           h1 Make functions return<br>something meaningful...
 
       section
+        img.bg(src="images/arnie.gif")
         div.overlay
           h1 A promise of execution!
 
@@ -666,14 +653,26 @@ html
             });
 
       section
+        img.bg(src="images/guy-on-pig.gif")
         div.overlay
           h1 But that's another story...
+          h2
+            a(href="http://www.promisejs.org/") http://www.promisejs.org/
 
       section
-        h1 Thank you!
-        h2 fragphace@gmail.com
-        h2 @fragphace
+        img.bg(src="images/friends.gif")
+        div.overlay
+          h1 Thank you!
+          h2
+            a(href="http://fragphace.pl") http://fragphace.pl
 
+      section
+        img.bg(src='images/uncle_sam.jpg')
+        div.overlay
+          h2 If you want me to
+          h1 coach you team
+          h2 give me a shout!
+          h2 fragphace@gmail.com
 
     script(src='bower_components/bespoke.js/dist/bespoke.min.js')
     script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')

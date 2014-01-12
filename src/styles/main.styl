@@ -127,7 +127,6 @@ h1
   font-family Raleway
   font-size: 58px
   line-height: 82px
-  letter-spacing: -2px
   margin-bottom: 16px
   text-transform uppercase
 
@@ -174,12 +173,17 @@ section code[class*="language-"]
   position absolute
   height 100%
   left 0
+  opacity 0.4
   width 100%
   top 0
   z-index 0
 
+.bg.nofade
+  opacity 1
+
+
 .overlay
-  background rgba(0, 0, 0, 0.8)
   padding 20px 0
   width 100%
   z-index 1
+  text-shadow 3px 3px 0 #000
