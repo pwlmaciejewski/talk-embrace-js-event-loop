@@ -153,6 +153,398 @@ html
               li Speed
               li No deadlocks
 
+      section
+        div.overlay
+          h1 Where's the catch?
+          h2 Everything's a tradeoff
+
+      section
+        div.overlay
+          h1 Callback hell!
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+              redis.keys('*', function(err, keys) {
+              });
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+              redis.keys('*', function(err, keys) {
+                if (err) { // Deal with it, AGAIN! }
+              });
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+              redis.keys('*', function(err, keys) {
+                if (err) { // Deal with it, AGAIN! }
+                db.query('SELECT * FROM product', function (err, products) {
+                });
+              });
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+              redis.keys('*', function(err, keys) {
+                if (err) { // Deal with it, AGAIN! }
+                db.query('SELECT * FROM product', function (err, products) {
+                  if (err) { // ARGH! }
+                });
+              });
+            });
+
+      section
+        code.language-javascript
+          pre.
+            fs.readFile('foo.txt', function (err, text) {
+              if (err) { // Deal with it! }
+              redis.keys('*', function(err, keys) {
+                if (err) { // Deal with it, AGAIN! }
+                db.query('SELECT * FROM product', function (err, products) {
+                  if (err) { // ARGH! }
+                  // You can see where it goes...
+                });
+              });
+            });
+
+      section
+        div.overlay
+          h1 The Pyramid of Doom!!!
+
+      section
+        code.language-javascript
+          pre.
+            // Code uses jQuery to illustrate the Pyramid of Doom
+            (function($) {
+              $(function(){
+                $("button").click(function(e) {
+                  $.get("/test.json", function(data, textStatus, jqXHR) {
+                    $(".list").each(function() {
+                      $(this).click(function(e) {
+                        setTimeout(function() {
+                          alert("Hello World!");
+                        }, 1000);
+                      });
+                    });
+                  });
+                });
+              });
+            })(jQuery);
+
+      section
+        div.overlay
+          h1 Na&iuml;ve approach leads to<br>the catastrophic results
+
+      section
+        div.overlay
+          h2 JavaScript is one of the most expressive languages
+          h1 Use the power to help yourself
+
+      section
+        code.language-javascript
+          pre.
+            callbackHeaven = function (fns, callback) {
+                var results = [];
+                var index = 0;
+                var cb = function (err, result) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+                    results.push(result);
+                    index += 1;
+                    if (fns[index]) {
+                        fns[index].call(this, cb);
+                    } else {
+                        callback(null, results);
+                    }
+                };
+                fns[0].call(this, cb);
+            };
+
+      section
+        code.language-javascript
+          pre.
+            callbackHeaven([
+                function (cb) {
+                    console.log('call 1');
+                    setTimeout(function () {
+                        console.log('result 1');
+                        cb(null, 1);
+                    }, 1000)
+                },
+                function (cb) {
+                    console.log('call 2');
+                    setTimeout(function () {
+                        console.log('result 2');
+                        cb(null, 2);
+                    }, 500);
+                }
+            ], function (err, results) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log(results);
+            });
+
+      section
+        code.language-bash
+          pre.
+            $ node examples/callbackHeaven.js
+            call 1
+            result 1
+            call 2
+            result 2
+            [ 1, 2 ]
+
+      section
+        div.overlay
+          h1 It's better, but...
+          h2 It's only the one scenario (series)
+
+      section
+        div.overlay
+          h1 Use async.js!
+
+      section
+        code.language-javascript
+          pre.
+            async.series([
+            //    function (cb) {
+            //        console.log('call 1');
+            //        setTimeout(function () {
+            //            console.log('result 1');
+            //           cb(null, 1);
+            //        }, 1000)
+            //    },
+            //    function (cb) {
+            //        console.log('call 2');
+            //        setTimeout(function () {
+            //            console.log('result 2');
+            //            cb(null, 2);
+            //        }, 500);
+            //    }
+            //], function (err, results) {
+            //    if (err) {
+            //        console.log(err);
+            //        return;
+            //    }
+            //    console.log(results);
+            //});
+
+      section
+        code.language-bash
+          pre.
+            $ node examples/async-series.js
+            call 1
+            result 1
+            call 2
+            result 2
+            [ 1, 2 ]
+
+      section
+        code.language-javascript
+          pre.
+            async.parallel([
+            //    function (cb) {
+            //        console.log('call 1');
+            //        setTimeout(function () {
+            //            console.log('result 1');
+            //            cb(null, 1);
+            //        }, 1000)
+            //    },
+            //    function (cb) {
+            //        console.log('call 2');
+            //        setTimeout(function () {
+            //            console.log('result 2');
+            //            cb(null, 2);
+            //        }, 500);
+            //    }
+            //], function (err, results) {
+            //    if (err) {
+            //       console.log(err);
+            //        return;
+            //    }
+            //    console.log(results);
+            //});
+
+      section
+        code.language-bash
+          pre.
+            $ node examples/async-parallel.js
+            call 1
+            call 2
+            result 2
+            result 1
+            [ 1, 2 ]
+
+      section
+        code.language-javascript
+          pre.
+            async.waterfall([
+            //    function (cb) {
+            //        console.log('call 1');
+            //        setTimeout(function () {
+            //            console.log('result 1');
+                        cb(null, 1, 2);
+            //        }, 1000)
+            //    },
+                function (one, two, cb) {
+                    console.log(one, two);
+            //        console.log('call 2');
+            //        setTimeout(function () {
+            //            console.log('result 2');
+                        cb(null, 3);
+            //        }, 500);
+            //    }
+            ], function (err, three) {
+            //    if (err) {
+            //        console.log(err);
+            //        return;
+            //    }
+                console.log(three);
+            //});
+
+      section
+        code.language-bash
+          pre.
+            $ node examples/async-waterfall.js
+            call 1
+            result 1
+            1 2
+            call 2
+            result 2
+            3
+      section
+        div.overlay
+          h1 This and more!
+          h2
+            a(href="https://github.com/caolan/async") https://github.com/caolan/async
+
+      section
+        div.overlay
+          h1 Async.js Protip #1
+          h2 Use async.js + partial application
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              callback(null, a + b);
+            };
+
+            async.series([
+              function (cb) {
+                add(1, 2, cb);
+              },
+              function (cb) {
+                add(3, 4, cb);
+              }
+            ]);
+
+      section
+        code.language-javascript
+          pre.
+            fn = _.partial(add, 1, 2);
+            // Gives you a new function
+            // that's the same as add
+            // with two first parameters
+            // fixed to 1 and 2
+
+            // The same as:
+            fn = function (cb) {
+              add(1, 2, cb);
+            };
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              callback(null, a + b);
+            };
+
+            async.series([
+              _.partial(add, 1, 2),
+              _.partial(add, 3, 4)
+            ]);
+
+      section
+        div.overlay
+          h1 Async.js Protip #2
+          h2
+            | Writing your async functions
+            br
+            | USE THE CONVENTION
+
+      section
+        code.language-javascript
+          pre.
+            // Can't partial because callback is the first arg
+            var add = function (callback, a, b) {
+              callback(null, a + b);
+            };
+
+            async.series([
+              function (cb) {
+                add(cb, 1, 2);
+              }
+            ]);
+
+      section
+        code.language-javascript
+          pre.
+            var add = function (a, b, callback) {
+              // Can't partial beacuse async will think
+              // that the result it's the error
+              callback(a + b);
+            };
+
+            async.series([
+              function (cb) {
+                add(function (result) {
+                  cb(null, result);
+                });
+              }
+            ]);
+
+      section
+        div.overlay
+          h1 I beg you
+          h2 callback is the LAST argument
+          h2 callback takes the ERROR and the RESULT
+
+      section
+        div.overlay
+          h1 No more code for today
+          h2 yay!
+
     script(src='bower_components/bespoke.js/dist/bespoke.min.js')
     script(src='bower_components/bespoke-bullets/dist/bespoke-bullets.min.js')
     script(src='bower_components/bespoke-hash/dist/bespoke-hash.min.js')
