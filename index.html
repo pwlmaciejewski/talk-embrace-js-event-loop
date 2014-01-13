@@ -1,0 +1,336 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Embrace JS Event Loop</title><link rel="stylesheet" type="text/css" href="bower_components/prism/themes/prism-tomorrow.css"><link rel="stylesheet" type="text/css" href="styles/main.css"><link href="http://fonts.googleapis.com/css?family=Ubuntu+Mono|The+Girl+Next+Door|Lora:400,700,400italic,700italic|Raleway:400,600,900" rel="stylesheet" type="text/css"></head><body><article><section><h1>Embrace JS Event Loop</h1><h3>by @fragphace</h3></section><section><img src="images/kermit.gif" class="bg"><div class="overlay"><h1>Let's write a HTTP server!</h1></div></section><section><code class="language-python"><pre>import os
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+class MyHandler(BaseHTTPRequestHandler):
+    def do_GET (self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        f = open(os.path.dirname(os.path.realpath(__file__)) + '/file.txt')
+        self.wfile.write(f.read())
+        f.close()
+        
+server = HTTPServer(('', 8001), MyHandler)
+server.serve_forever()
+print 'Server started on port 8001'
+</pre></code></section><section><img src="images/iron_man.gif" class="bg"><div class="overlay"><h1>Now, lets test it!</h1></div></section><section><code class="language-bash"><pre>ab -n 1000 -c 10 http://127.0.0.1:8001/
+
+Requests per second:    1569.56 [#/sec] (mean)
+Time per request:       6.371 [ms] (mean)
+Time per request:       0.637 [ms] (mean, across all concurrent requests)
+</pre></code></section><section><h1>Let's do the same with JavaScript</h1></section><section><code class="language-javascript"><pre>var http = require('http');
+var fs = require('fs');
+
+var server = http.createServer(function (req, res) {
+    fs.readFile(__dirname + '/file.txt', function (err, text) {
+        if (err) {
+            res.writeHead('404');
+            res.write('File not found');
+            return res.end();
+        }
+        res.writeHead('200', {
+            'Content-Type': 'text/plain'
+        });
+        res.write(text);
+        res.end();
+    });
+});
+
+server.listen(8002, function () {
+    console.log('Server started on port 8002');
+});
+</pre></code></section><section><code class="language-bash"><pre>ab -n 1000 -c 10 http://127.0.0.1:8002/
+
+Requests per second:    4615.93 [#/sec] (mean)
+Time per request:       2.166 [ms] (mean)
+Time per request:       0.217 [ms] (mean, across all concurrent requests)
+</pre></code></section><section><img src="images/nodejs_vs_apache.png" class="bg"><div class="overlay"><h1>Node.js is fast</h1><h2>Google: node.js benchmark [your favourite language]</h2></div></section><section><img src="images/wtf.jpg" class="bg"><div class="overlay"><h1>WHY???</h1></div></section><section><img src="images/race_accident.gif" class="bg"><div class="overlay"><h1>Is JavaScript THAT fast?</h1><h2>(it's not)</h2></div></section><section><img src="images/cat-watching.gif" class="bg"><div class="overlay"><h2>You gotta ask yourself a question</h2><h1>What threads are doing<br>for most of the time?</h1></div></section><section><img src="images/cat-sleeping.gif" class="bg"><div class="overlay"><h1>They're waiting!</h1></div></section><section><code class="language-python"><pre># class MyHandler(BaseHTTPRequestHandler):
+#     def do_GET (self):
+#         self.send_response(200)
+#         self.send_header('Content-type', 'text/plain')
+#         self.end_headers()
+          f = open('./file.txt')
+#         self.wfile.write(f.read())
+#         f.close()
+</pre></code></section><section><img src="images/prefork.png" class="bg nofade"></section><section><img src="images/headbanging.gif" class="bg"><div class="overlay"><h1>Node.js do not wait</h1><h2>Event loop, baby!</h2></div></section><section><img src="images/monocycle.gif" class="bg"><div class="overlay"><h2>It's true for browsers as well</h2><h1>If you JavaScript,<br>you're in Event Loop</h1></div></section><section><img src="images/event_loop.png" class="bg nofade"></section><section><img src="images/wow.gif" class="bg"><div class="overlay"><h1>Benefits!</h1><h2><ul><li>Speed</li><li>No deadlocks</li></ul></h2></div></section><section><img src="images/dog-catch.gif" class="bg"><div class="overlay"><h1>Where's the catch?</h1><h2>Everything's a tradeoff</h2></div></section><section><img src="images/kim-carrey.gif" class="bg"><div class="overlay"><h1>Callback hell!</h1></div></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+  redis.keys('*', function(err, keys) {
+  });
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+  redis.keys('*', function(err, keys) {
+    if (err) { // Deal with it, AGAIN! }
+  });
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+  redis.keys('*', function(err, keys) {
+    if (err) { // Deal with it, AGAIN! }
+    db.query('SELECT * FROM product', function (err, products) {
+    });
+  });
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+  redis.keys('*', function(err, keys) {
+    if (err) { // Deal with it, AGAIN! }
+    db.query('SELECT * FROM product', function (err, products) {
+      if (err) { // ARGH! }
+    });
+  });
+});
+</pre></code></section><section><code class="language-javascript"><pre>fs.readFile('foo.txt', function (err, text) {
+  if (err) { // Deal with it! }
+  redis.keys('*', function(err, keys) {
+    if (err) { // Deal with it, AGAIN! }
+    db.query('SELECT * FROM product', function (err, products) {
+      if (err) { // ARGH! }
+      // You can see where it goes...
+    });
+  });
+});
+</pre></code></section><section><img src="images/atomic-bomb.gif" class="bg"><div class="overlay"><h1>The Pyramid of Doom!!!</h1></div></section><section><code class="language-javascript"><pre>// Code uses jQuery to illustrate the Pyramid of Doom
+(function($) {
+  $(function(){
+    $(&quot;button&quot;).click(function(e) {
+      $.get(&quot;/test.json&quot;, function(data, textStatus, jqXHR) {
+        $(&quot;.list&quot;).each(function() {
+          $(this).click(function(e) {
+            setTimeout(function() {
+              alert(&quot;Hello World!&quot;);
+            }, 1000);
+          });
+        });
+      });
+    });
+  });
+})(jQuery);
+</pre></code></section><section><img src="images/policeman-blow-up.gif" class="bg"><div class="overlay"><h1>Na&iuml;ve approach leads to<br>the catastrophic results</h1></div></section><section><img src="images/deer-wow.gif" class="bg"><div class="overlay"><h2>JavaScript is one of the most expressive languages</h2><h1>Use the power to help yourself</h1></div></section><section><code class="language-javascript"><pre>callbackHeaven = function (fns, callback) {
+    var results = [];
+    var index = 0;
+    var cb = function (err, result) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        results.push(result);
+        index += 1;
+        if (fns[index]) {
+            fns[index].call(this, cb);
+        } else {
+            callback(null, results);
+        }
+    };
+    fns[0].call(this, cb);
+};
+</pre></code></section><section><code class="language-javascript"><pre>callbackHeaven([
+    function (cb) {
+        console.log('call 1');
+        setTimeout(function () {
+            console.log('result 1');
+            cb(null, 1);
+        }, 1000)
+    },
+    function (cb) {
+        console.log('call 2');
+        setTimeout(function () {
+            console.log('result 2');
+            cb(null, 2);
+        }, 500);
+    }
+], function (err, results) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    console.log(results);
+});
+</pre></code></section><section><code class="language-bash"><pre>$ node examples/callbackHeaven.js
+call 1
+result 1
+call 2
+result 2
+[ 1, 2 ]
+</pre></code></section><section><img src="images/floor-jumping.gif" class="bg"><div class="overlay"><h1>It's better, but...</h1><h2>It's only the one scenario (series)</h2></div></section><section><img src="images/escalator-superman.gif" class="bg"><div class="overlay"><h1>Use async.js!</h1></div></section><section><code class="language-javascript"><pre>async.series([
+  // ...
+], function (err, results) {
+  // ...
+});
+</pre></code></section><section><code class="language-bash"><pre>$ node examples/async-series.js
+call 1
+result 1
+call 2
+result 2
+[ 1, 2 ]
+</pre></code></section><section><code class="language-javascript"><pre>async.parallel([
+  // ...
+], function (err, results) {
+  // ...
+});
+</pre></code></section><section><code class="language-bash"><pre>$ node examples/async-parallel.js
+call 1
+call 2
+result 2
+result 1
+[ 1, 2 ]
+</pre></code></section><section><code class="language-javascript"><pre>async.waterfall([
+    function (cb) {
+        console.log('call 1');
+        setTimeout(function () {
+            console.log('result 1');
+        cb(null, 1, 2);
+        }, 1000)
+    },
+    function (one, two, cb) {
+        console.log(one, two);
+        console.log('call 2');
+        setTimeout(function () {
+            console.log('result 2');
+        cb(null, 3);
+        }, 500);
+    }
+], function (err, three) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    console.log(three);
+});
+</pre></code></section><section><code class="language-bash"><pre>$ node examples/async-waterfall.js
+call 1
+result 1
+1 2
+call 2
+result 2
+3</pre></code></section><section><img src="images/async-parallel.gif" class="bg"><div class="overlay"><h1>This and more!</h1><h2><a href="https://github.com/caolan/async">https://github.com/caolan/async</a></h2></div></section><section><img src="images/black-balls.gif" class="bg"><div class="overlay"><h1>Async.js Protip #1</h1><h2>Use async.js + partial application</h2></div></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  callback(null, a + b);
+};
+
+async.series([
+  function (cb) {
+    add(1, 2, cb);
+  },
+  function (cb) {
+    add(3, 4, cb);
+  }
+]);
+</pre></code></section><section><code class="language-javascript"><pre>fn = _.partial(add, 1, 2);
+// Gives you a new function
+// that's the same as add
+// with two first parameters
+// fixed to 1 and 2
+
+// The same as:
+fn = function (cb) {
+  add(1, 2, cb);
+};
+</pre></code></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  callback(null, a + b);
+};
+
+async.series([
+  _.partial(add, 1, 2),
+  _.partial(add, 3, 4)
+]);
+</pre></code></section><section><img src="images/clease.gif" class="bg"><div class="overlay"><h1>Async.js Protip #2</h1><h2>Writing your async functions<br>USE THE CONVENTION</h2></div></section><section><code class="language-javascript"><pre>// Can't partial because callback is the first arg
+var add = function (callback, a, b) {
+  callback(null, a + b);
+};
+
+async.series([
+  function (cb) {
+    add(cb, 1, 2);
+  }
+]);
+</pre></code></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  // Can't partial because async will think
+  // that the result it's the error
+  callback(a + b);
+};
+
+async.series([
+  function (cb) {
+    add(1, 2, function (result) {
+      cb(null, result);
+    });
+  }
+]);
+</pre></code></section><section><img src="images/who-rain.gif" class="bg"><div class="overlay"><h1>I beg you</h1><h2>callback is the LAST argument</h2><h2>callback takes the ERROR and the RESULT</h2></div></section><section><img src="images/team-fortess.gif" class="bg"><div class="overlay"><h1>Is async.js the cure</h1><h2>for event loop pain?</h2></div></section><section><img src="images/codebase-over-time.gif" class="bg"><div class="overlay"><h2>Here's the thing...</h2><h1>Asynchronous code is contagious</h1><h2>Nothing can stop it</h2></div></section><section><code class="language-javascript"><pre>var add = function (a, b) {
+  return a + b;
+};
+
+var foo (something) {
+  if (something) {
+    return add(1, 2);
+  } else {
+    return 0;
+  }
+};
+</pre></code></section><section><h1>Let's make add asynchronous</h1></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  setTimeout(function() {
+    callback(null, a + b);
+  }, 1000);
+};
+
+var foo (something) {
+  if (something) {
+    return add(1, 2);
+  } else {
+    return 0;
+  }
+};
+</pre></code></section><section><h1>And now foo is broken...</h1></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  setTimeout(function() {
+    callback(null, a + b);
+  }, 1000);
+};
+
+var foo (something, callback) {
+  if (something) {
+    add(1, 2, callback);
+  } else {
+    callback(null, 0);
+  }
+};
+</pre></code></section><section><img src="images/alice-eyeroll.gif" class="bg"><div class="overlay"><h1>Asynchronous code<br>causes brain damage</h1><h2>It's the price for event loop          </h2></div></section><section><img src="images/trash.gif" class="bg"><div class="overlay"><h1>No silver bullet</h1><h2>Clean Code</h2><h2>Separate sync vs. async</h2></div></section><section><img src="images/top-gear_fire.gif" class="bg"><div class="overlay"><h1>Does it have be like this?</h1></div></section><section><code class="language-javascript"><pre>var add = function (a, b, callback) {
+  setTimeout(function() {
+    callback(null, a + b);
+  }, 1000);
+};
+</pre></code></section><section><img src="images/jumper-fail.gif" class="bg"><div class="overlay"><h2>It breaks the fundandamental thing about functions</h2><h1>Function doesn't return the result</h1></div></section><section><img src="images/printer-cat.gif" class="bg"><div class="overlay"><h2>We can fix it!</h2><h1>Make functions return<br>something meaningful...</h1></div></section><section><img src="images/arnie.gif" class="bg"><div class="overlay"><h1>A promise of execution!</h1></div></section><section><code class="language-javascript"><pre>var add = function (a, b) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve(a + b);
+    }, 1000);
+  });
+};
+</pre></code></section><section><code class="language-javascript"><pre>var add = function (a, b) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      reject(a + b);
+    }, 1000);
+  });
+};
+
+addPromise = add(1, 2);
+addPromise.done(function (result) {
+  console.log(result);
+}, function (err) {
+  throw err;
+});
+</pre></code></section><section><h1>Are promises better<br>than callbacks?</h1></section><section><img src="images/guy-on-pig.gif" class="bg"><div class="overlay"><h1>But that's another story...</h1><h2><a href="http://www.promisejs.org/">http://www.promisejs.org/</a></h2></div></section><section><img src="images/friends.gif" class="bg"><div class="overlay"><h1>Thank you!</h1><h2><a href="http://fragphace.pl">http://fragphace.pl</a></h2></div></section><section><img src="images/uncle_sam.jpg" class="bg"><div class="overlay"><h2>If you want me to</h2><h1>coach you team</h1><h2>give me a shout!</h2><h2>fragphace@gmail.com</h2></div></section></article><script src="bower_components/bespoke.js/dist/bespoke.min.js"></script><script src="bower_components/bespoke-bullets/dist/bespoke-bullets.min.js"></script><script src="bower_components/bespoke-hash/dist/bespoke-hash.min.js"></script><script src="bower_components/bespoke-state/dist/bespoke-state.min.js"></script><script src="bower_components/prism/prism.js"></script><script src="bower_components/prism/components/prism-coffeescript.js"></script><script src="bower_components/prism/components/prism-python.js"></script><script src="scripts/main.js"></script></body></html>
+
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Embrace JS Event Loop</title><link rel="stylesheet" type="text/css" href="bower_components/prism/themes/prism-tomorrow.css"><link rel="stylesheet" type="text/css" href="styles/main.css"><link href="http://fonts.googleapis.com/css?family=Ubuntu+Mono|The+Girl+Next+Door|Lora:400,700,400italic,700italic|Raleway:400,600,900" rel="stylesheet" type="text/css"></head><body><article><section><h1>Embrace JS Event Loop</h1><h3>by @fragphace</h3></section><section><img src="images/kermit.gif" class="bg"><div class="overlay"><h1>Let's write a HTTP server!</h1></div></section><section><code class="language-python"><pre>@@server.py
+</pre></code></section><section><img src="images/iron_man.gif" class="bg"><div class="overlay"><h1>Now, lets test it!</h1></div></section><section><code class="language-bash"><pre>ab -n 1000 -c 10 http://127.0.0.1:8080/
+
+Requests per second:    1569.56 [#/sec] (mean)
+Time per request:       6.371 [ms] (mean)
+Time per request:       0.637 [ms] (mean, across all concurrent requests)
+</pre></code></section><section><code class="language-javascript"><pre>@@server.js
+</pre></code></section></article><script src="bower_components/bespoke.js/dist/bespoke.min.js"></script><script src="bower_components/bespoke-bullets/dist/bespoke-bullets.min.js"></script><script src="bower_components/bespoke-hash/dist/bespoke-hash.min.js"></script><script src="bower_components/bespoke-state/dist/bespoke-state.min.js"></script><script src="bower_components/prism/prism.js"></script><script src="bower_components/prism/components/prism-coffeescript.js"></script><script src="bower_components/prism/components/prism-python.js"></script><script src="scripts/main.js"></script></body></html>
