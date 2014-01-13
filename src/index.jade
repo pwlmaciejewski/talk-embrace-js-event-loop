@@ -26,6 +26,7 @@ html
       section
         code.language-python
           pre.
+            import os
             from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
             class MyHandler(BaseHTTPRequestHandler):
@@ -33,13 +34,13 @@ html
                     self.send_response(200)
                     self.send_header('Content-type', 'text/plain')
                     self.end_headers()
-                    f = open('./file.txt')
+                    f = open(os.path.dirname(os.path.realpath(__file__)) + '/file.txt')
                     self.wfile.write(f.read())
                     f.close()
 
-            server = HTTPServer(('', 8080), MyHandler)
+            server = HTTPServer(('', 8001), MyHandler)
             server.serve_forever()
-            print 'Server started on port 8080'
+            print 'Server started on port 8001'
 
       section
         img.bg(src="images/iron_man.gif")
@@ -503,14 +504,14 @@ html
         code.language-javascript
           pre.
             var add = function (a, b, callback) {
-              // Can't partial beacuse async will think
+              // Can't partial because async will think
               // that the result it's the error
               callback(a + b);
             };
 
             async.series([
               function (cb) {
-                add(function (result) {
+                add(1, 2, function (result) {
                   cb(null, result);
                 });
               }
@@ -595,7 +596,19 @@ html
         img.bg(src="images/alice-eyeroll.gif")
         div.overlay
           h1 Asynchronous code<br>causes brain damage
-          h2 It's the price for event loop
+          h2 It's the price for event loop          
+
+      section
+        img.bg(src="images/trash.gif")
+        div.overlay
+          h1 No silver bullet
+          h2 Clean Code
+          h2 Separate sync vs. async
+
+      section
+        img.bg(src="images/top-gear_fire.gif")
+        div.overlay
+          h1 Does it have be like this?
 
       section
         code.language-javascript
@@ -651,6 +664,9 @@ html
             }, function (err) {
               throw err;
             });
+
+      section
+        h1 Are promises better<br>than callbacks?
 
       section
         img.bg(src="images/guy-on-pig.gif")
