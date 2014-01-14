@@ -1,5 +1,6 @@
 # Embrace JS Event Loop
-> A [Bespoke.js](http://markdalgleish.com/projects/bespoke.js) presentation, built with [generator-bespoke](https://github.com/markdalgleish/generator-bespoke)
+
+* [SLIDES](http://fragphace.github.io/talk-embrace-js-event-loop/)
 
 ## View slides locally
 
